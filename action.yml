@@ -1,0 +1,60 @@
+name: 'Deploy to BlueOS Cloud Container Registry'
+description: 'Action to build and push docker images into BlueOS Cloud container registry'
+inputs:
+  BCLOUD_PAT:
+    description: 'xyz'
+    required: true
+  REGISTRY:
+    description: 'BlueOS Cloud ECR uri'
+    required: false
+    default: "316003453400.dkr.ecr.us-east-1.amazonaws.com"
+  EXTENSION:
+    description: 'xyz'
+    required: true
+  PLATFORMS:
+    description: 'xyz'
+    required: false
+    default: "linux/arm/v7,linux/arm64,linux/amd64"
+  CONTEXT:
+    description: 'xyz'
+    required: false
+    default: "{{defaultContext}}"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check if branch is in semver format
+      id: check_format
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_name }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then 
+          echo "Tag or branch name: ${{ github.ref_name }} ✅ is in semver format!"
+        else 
+          echo "::error ::Tag or branch name: ${{ github.ref_name }} ❌ is NOT in semver format!"
+          echo "Tag or branch name: ${{ github.ref_name }} ❌ is NOT in semver format!" && exit 1
+        fi
+    - name: Get and set credentials variables
+      id: vars
+      shell: bash
+      run: |
+        registry_password=$(curl -H "Authorization: Token ${{ inputs.BCLOUD_PAT }}" https://app.blueos.cloud/api/v1/extensions/registry_credentials/ | jq -r .password)
+        echo "::add-mask::$registry_password"
+        echo "BCLOUD_REGISTRY_PASSWORD=$registry_password" >> $GITHUB_OUTPUT
+
+    - name: Login in ECR
+      shell: bash
+      run: |
+        docker login -u AWS -p ${{ steps.vars.outputs.BCLOUD_REGISTRY_PASSWORD }} ${{ inputs.REGISTRY }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build and push image to dockerhub
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ inputs.CONTEXT }}
+        push: true
+        platforms: ${{ inputs.PLATFORMS }}
+        tags: |
+          ${{ inputs.REGISTRY }}/${{ inputs.EXTENSION }}:${{ github.ref_name }}
+        provenance: false
