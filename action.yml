@@ -2,21 +2,21 @@ name: 'Deploy to BlueOS Cloud Container Registry'
 description: 'Action to build and push docker images into BlueOS Cloud container registry'
 inputs:
   BCLOUD_PAT:
-    description: 'xyz'
+    description: 'BlueOS Cloud Personal Access Token (PAT)'
     required: true
   REGISTRY:
-    description: 'BlueOS Cloud ECR uri'
+    description: 'BlueOS Cloud registry url'
     required: false
     default: "316003453400.dkr.ecr.us-east-1.amazonaws.com"
   EXTENSION:
-    description: 'xyz'
+    description: "BlueOS CLoud extension identifier"
     required: true
   PLATFORMS:
-    description: 'xyz'
+    description: "List of target platforms for build"
     required: false
     default: "linux/arm/v7,linux/arm64,linux/amd64"
   CONTEXT:
-    description: 'xyz'
+    description: "Build's context is the set of files located in the specified PATH or URL"
     required: false
     default: "{{defaultContext}}"
 
