@@ -33,3 +33,10 @@ or the command line.
 
 You can create one by going into [BlueOS cloud settings > Programmatic access](https://app.blueos.cloud/account/user/token/) 
 
+### Where can I find my extension id?
+
+After you create your extension in BlueOS Cloud Studio, you will see field called **Container image**, this string is composed by the registry url, plus your extension id:
+
+    <registry-url>/<extension-id>
+
+![image](https://github.com/user-attachments/assets/695348a6-5f0f-470d-825c-29c09f65c56c)
