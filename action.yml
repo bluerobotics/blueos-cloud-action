@@ -27,7 +27,7 @@ runs:
       id: check_format
       shell: bash
       run: |
-        if [[ "${{ github.ref_name }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then 
+        if [[ "${{ github.ref_name }}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then 
           echo "Tag or branch name: ${{ github.ref_name }} ✅ is in semver format!"
         else 
           echo "::error ::Tag or branch name: ${{ github.ref_name }} ❌ is NOT in semver format!"
