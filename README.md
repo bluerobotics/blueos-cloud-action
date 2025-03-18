@@ -13,13 +13,14 @@ on:
   push:
     tags:
       - '*.*.*'
+      - 'v*.*.*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Build and Publish Extension in BlueOS CLoud
-        uses: bluerobotics/blueos-cloud-action@0.0.1
+        uses: bluerobotics/blueos-cloud-action@0.0.3
         with:
           BCLOUD_PAT: ${{secrets.BCLOUD_PAT}}
           PLATFORMS: linux/arm/v7,linux/arm64,linux/amd64
